@@ -180,20 +180,20 @@ public class BuscaminasUI extends JFrame {
 		txtCantidadMinas = new JLabel();
 		panelContadores.add(txtCantidadMinas);
 		txtCantidadMinas.setHorizontalAlignment(SwingConstants.CENTER);
-		txtCantidadMinas.setPreferredSize(new Dimension(35, 35));
+		txtCantidadMinas.setPreferredSize(new Dimension(52, 35));
 		txtCantidadMinas.setOpaque(true);
 		txtCantidadMinas.setBackground(getCasillero().getColorBandera());
 		txtCantidadMinas.setBorder(new EmptyBorder(5, 5, 5, 5));
-		txtCantidadMinas.setFont(new Font("SansSerif", Font.BOLD, 12));
+		txtCantidadMinas.setFont(new Font("SansSerif", Font.PLAIN, 20));
 		txtCantidadMinas.setBounds(new Rectangle(0, 0, 50, 50));
 		
 		txtCantidadCasillas = new JLabel("");
 		panelContadores.add(txtCantidadCasillas);
 		txtCantidadCasillas.setHorizontalAlignment(SwingConstants.CENTER);
-		txtCantidadCasillas.setPreferredSize(new Dimension(35, 35));
+		txtCantidadCasillas.setPreferredSize(new Dimension(52, 35));
 		txtCantidadCasillas.setOpaque(true);
 		txtCantidadCasillas.setBorder(new EmptyBorder(5, 5, 5, 5));
-		txtCantidadCasillas.setFont(new Font("SansSerif", Font.BOLD, 12));
+		txtCantidadCasillas.setFont(new Font("SansSerif", Font.PLAIN, 20));
 		txtCantidadCasillas.setBackground(getCasillero().getColorCasilla());
 		
 		panelRecord = new JPanel();
@@ -205,12 +205,12 @@ public class BuscaminasUI extends JFrame {
 		lblNewLabel = new JLabel("Tiempo record:");
 		lblNewLabel.setBorder(new EmptyBorder(0, 8, 0, 0));
 		lblNewLabel.setForeground(new Color(227, 217, 166));
-		lblNewLabel.setFont(new Font("SansSerif", Font.BOLD, 15));
+		lblNewLabel.setFont(new Font("SansSerif", Font.ITALIC, 18));
 		panelRecord.add(lblNewLabel);
 		
 		txtRecord = new JLabel("New label");
 		txtRecord.setBorder(new EmptyBorder(0, 8, 0, 0));
-		txtRecord.setFont(new Font("SansSerif", Font.BOLD, 15));
+		txtRecord.setFont(new Font("SansSerif", Font.PLAIN, 18));
 		panelRecord.add(txtRecord);
 		
 		panelTiempo = new JPanel();
