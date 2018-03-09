@@ -52,7 +52,7 @@ public class BuscaminasUI extends JFrame {
 		setBounds(100, 100, 1406, 1056);
 		setTitle("Buscaminas");
 		setExtendedState(MAXIMIZED_BOTH);
-		setMinimumSize(new Dimension(this.widthScreen / 2, (int) (this.heightScreen / 1.3)));
+		setMinimumSize(new Dimension((int) (this.widthScreen / 2.3), (int) (this.heightScreen / 1.2)));
 		
 		contentPane = new JPanelBackgroundImage("/assets/bg.jpg");
 		contentPane.setOpaque(false);
@@ -227,7 +227,7 @@ public class BuscaminasUI extends JFrame {
 		txtTiempo.setFont(new Font("SansSerif", Font.PLAIN, 20));
 		txtTiempo.setBorder(new EmptyBorder(5, 10, 5, 10));
 		panelTiempo.add(txtTiempo);
-		panelPrincipal.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 20));
+		panelPrincipal.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 40));
 	}
 
 	public Casillero getCasillero() {
