@@ -1,31 +1,25 @@
 package vista;
 
 import java.awt.Color;
-import java.awt.Font;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
-
 import controlador.DisabledTextColor;
-import java.awt.FlowLayout;
 
 public class Casillero extends JPanel {
 
 	protected JButton casillas[][];
 	private int tamano = 20;
-
 	private Color colorTexto = new Color(70, 70, 70);
-	private final int MAXR = 112;
-	private final int MAXG = 159;
-	private final int MAXB = 177;
-	private final int MINR = 92;
-	private final int MING = 139;
-	private final int MINB = 157;
-	private final Color colorBandera = new Color(242, 212, 102);
+	private final Color colorBandera = new Color(236, 215, 133);
+	private final Color colorCasilla = new Color(169, 169, 169);
+	private final Color colorCasillaSeleccionada = new Color(227, 197, 143);
+	private final Color colorMinaTocada = new Color(171, 72, 72);
+	private final Color colorMinasSalvadas = new Color(72, 171, 141);
+	private final Color colorCasillaDesvelada = new Color(204, 204, 204);
+	private final Color colorUnaMina = new Color(50, 81, 142);
+	private final Color colorDosMinas = new Color(50, 142, 103);
+	private final Color colorMasMinas = new Color(142, 50, 50);
 
 	/**
 	 * Create the panel.
@@ -64,8 +58,7 @@ public class Casillero extends JPanel {
 		this.casillas[i][j].setText("");
 		this.casillas[i][j].setName(String.valueOf(i) + " " + String.valueOf(j));
 		this.casillas[i][j].setFocusPainted(false);
-		this.casillas[i][j].setForeground(colorTexto);
-		this.casillas[i][j].setBackground(obtenerBackgroundBoton(this.MAXR, this.MINR, this.MAXG, this.MING, this.MAXB, this.MINB));
+		this.casillas[i][j].setBackground(colorCasilla);
 		this.casillas[i][j].setBorder(new EmptyBorder(1, 1, 1, 1));
 	}
 	
@@ -80,40 +73,6 @@ public class Casillero extends JPanel {
 			}
 		}
 	}
-	
-	/**
-	 * Genera un numero aleatorio entre un maximo y un minimo
-	 * 
-	 * @param max
-	 *            Valor maximo
-	 * @param min
-	 *            Valor minimo
-	 * @return Retorna un valor entero
-	 */
-	private int generarColor(int max, int min) {
-		return (int) (Math.random() * (max - min + 1) + min);
-	}
-
-	/**
-	 * Genera un color
-	 * 
-	 * @param MAXR
-	 *            Valor maximo de Red
-	 * @param MINR
-	 *            Valor minimo de Red
-	 * @param MAXG
-	 *            Valor maximo de Green
-	 * @param MING
-	 *            Valor minimo de Green
-	 * @param MAXB
-	 *            Valor maximo de Blue
-	 * @param MINB
-	 *            Valor minimo de Blue
-	 * @return Retorna una instancia de la clase Color con unas propiedades RGB
-	 */
-	public Color obtenerBackgroundBoton(int MAXR, int MINR, int MAXG, int MING, int MAXB, int MINB) {
-		return new Color(generarColor(MAXR, MINR), generarColor(MAXG, MING), generarColor(MAXB, MINB));
-}
 
 	public JButton[][] getCasillas() {
 		return casillas;
@@ -141,6 +100,38 @@ public class Casillero extends JPanel {
 	
 	public Color getColorBandera() {
 		return colorBandera;
+	}
+
+	public Color getColorCasilla() {
+		return colorCasilla;
+	}
+
+	public Color getColorCasillaSeleccionada() {
+		return colorCasillaSeleccionada;
+	}
+
+	public Color getColorMinaTocada() {
+		return colorMinaTocada;
+	}
+
+	public Color getColorMinasSalvadas() {
+		return colorMinasSalvadas;
+	}
+
+	public Color getColorCasillaDesvelada() {
+		return colorCasillaDesvelada;
+	}
+
+	public Color getColorUnaMina() {
+		return colorUnaMina;
+	}
+
+	public Color getColorDosMinas() {
+		return colorDosMinas;
+	}
+
+	public Color getColorMasMinas() {
+		return colorMasMinas;
 	}
 
 }

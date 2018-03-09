@@ -14,8 +14,6 @@ public class ActionCasilla implements MouseListener {
 	private int[] coordenadas;
 	private int x;
 	private int y;
-	private Color colorCasilla;
-	private Color colorBandera = new Color(215, 200, 144);
 
 	public ActionCasilla(Tablero control, Bridge bridge) {
 		super();
@@ -47,8 +45,7 @@ public class ActionCasilla implements MouseListener {
 
 		if (bridge.getCasillero().getCasillas()[this.x][this.y].isEnabled() && bridge.getCasillero().getCasillas()[this.x][this.y].getText() == ""
 				&& bridge.getCasillero().getCasillas()[this.x][this.y].getBackground() != bridge.getCasillero().getColorBandera()) {
-			this.colorCasilla = bridge.getCasillero().getCasillas()[this.x][this.y].getBackground();
-			bridge.getCasillero().getCasillas()[this.x][this.y].setBackground(new Color(113, 203, 178));
+			bridge.getCasillero().getCasillas()[this.x][this.y].setBackground(bridge.getCasillero().getColorCasillaSeleccionada());
 		}
 	}
 
@@ -56,7 +53,7 @@ public class ActionCasilla implements MouseListener {
 	public void mouseExited(MouseEvent e) {
 		if (bridge.getCasillero().getCasillas()[this.x][this.y].isEnabled() && bridge.getCasillero().getCasillas()[this.x][this.y].getText() == ""
 				&& bridge.getCasillero().getCasillas()[this.x][this.y].getBackground() != bridge.getCasillero().getColorBandera()) {
-			bridge.getCasillero().getCasillas()[this.x][this.y].setBackground(this.colorCasilla);
+			bridge.getCasillero().getCasillas()[this.x][this.y].setBackground(bridge.getCasillero().getColorCasilla());
 		}
 	}
 

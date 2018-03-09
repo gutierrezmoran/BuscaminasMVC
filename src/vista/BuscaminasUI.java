@@ -141,6 +141,7 @@ public class BuscaminasUI extends JFrame {
 		panelCentral.setLayout(new BorderLayout(5, 0));
 		
 		casillero=new Casillero();
+		casillero.setBackground(Color.WHITE);
 		panelCentral.add(casillero, BorderLayout.CENTER);
 		casillero.setBorder(null);
 		casillero.setPreferredSize(new Dimension((int) panelCentral.getWidth(), (int) panelCentral.getWidth()));
@@ -156,7 +157,7 @@ public class BuscaminasUI extends JFrame {
 		JPanel panelContadores = new JPanel();
 		panelContadores.setOpaque(false);
 		panelInformacion.add(panelContadores, BorderLayout.EAST);
-		panelContadores.setLayout(new GridLayout(0, 2, 0, 0));
+		panelContadores.setLayout(new GridLayout(0, 2, 5, 0));
 		
 		txtCantidadMinas = new JLabel();
 		panelContadores.add(txtCantidadMinas);
@@ -175,7 +176,7 @@ public class BuscaminasUI extends JFrame {
 		txtCantidadCasillas.setOpaque(true);
 		txtCantidadCasillas.setBorder(new EmptyBorder(5, 5, 5, 5));
 		txtCantidadCasillas.setFont(new Font("SansSerif", Font.BOLD, 12));
-		txtCantidadCasillas.setBackground(new Color(200, 200, 200));
+		txtCantidadCasillas.setBackground(getCasillero().getColorCasilla());
 		
 		panelRecord = new JPanel();
 		panelRecord.setVisible(false);
@@ -200,7 +201,11 @@ public class BuscaminasUI extends JFrame {
 		panelTiempo.setLayout(new BorderLayout(0, 0));
 		
 		txtTiempo = new JLabel("0");
-		txtTiempo.setForeground(Color.WHITE);
+		txtTiempo.setOpaque(true);
+		txtTiempo.setBackground(Color.WHITE);
+		txtTiempo.setHorizontalAlignment(SwingConstants.CENTER);
+		txtTiempo.setPreferredSize(new Dimension(70, 35));
+		txtTiempo.setForeground(Color.DARK_GRAY);
 		txtTiempo.setFont(new Font("SansSerif", Font.PLAIN, 20));
 		txtTiempo.setBorder(new EmptyBorder(5, 10, 5, 10));
 		panelTiempo.add(txtTiempo);

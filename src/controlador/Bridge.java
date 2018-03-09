@@ -15,6 +15,7 @@ public class Bridge extends BuscaminasUI {
 	private ActionTemporizador listenerTemporizador = new ActionTemporizador(this);
 	private ActionDificultad listenerDificultad = new ActionDificultad(this);
 	private Timer timer = new Timer(1000, listenerTemporizador);
+	private final int tiempoLimite = 9999;
 
 	public Bridge() {
 		super();
@@ -22,11 +23,12 @@ public class Bridge extends BuscaminasUI {
 		setListeners();
 		timer.setRepeats(true);
 	}
-	
+
 	/**
 	 * Comprueba si se ha superado el record de la partida
 	 * 
-	 * @return Retora TRUE en caso de que se haya superado el record o FALSE en caso contrario
+	 * @return Retora TRUE en caso de que se haya superado el record o FALSE en caso
+	 *         contrario
 	 */
 	private boolean comprobarRecord() {
 		if (Integer.parseInt(txtTiempo.getText()) < control.getRecord()) {
@@ -34,14 +36,14 @@ public class Bridge extends BuscaminasUI {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Establece un nuevo record
 	 */
 	private void establecerRecord() {
 		control.setRecord(Integer.parseInt(txtTiempo.getText()));
 	}
-	
+
 	/**
 	 * Actualiza el componente grafico con el nuevo record
 	 */
@@ -49,14 +51,14 @@ public class Bridge extends BuscaminasUI {
 		txtRecord.setText(String.valueOf(control.getRecord()));
 		panelRecord.setVisible(true);
 	}
-	
+
 	/**
 	 * Oculta el componente grafico que representa el record
 	 */
 	private void ocultarRecord() {
 		panelRecord.setVisible(false);
 	}
-	
+
 	/**
 	 * Establece el valor del componente grafico que representa el record a 0
 	 */
@@ -85,7 +87,7 @@ public class Bridge extends BuscaminasUI {
 			toggleCasillasRestantes();
 			mostrarMinas();
 			getCasillero().deshabilitarCasillas();
-			if(control.isFinalizado()) {
+			if (control.isFinalizado()) {
 				comprobarRecord();
 				establecerRecord();
 				mostrarRecord();
@@ -118,14 +120,15 @@ public class Bridge extends BuscaminasUI {
 	private void setPropiedadesMina(int i, int j) {
 		casillero.getCasillas()[i][j].setFont(new Font("Arial", Font.BOLD, casillero.getCasillas()[i][j].getWidth()));
 		if (control.isMinaTocada()) {
-			this.casillero.getCasillas()[i][j].setBackground(new Color(197, 74, 74));
-			this.casillero.getCasillas()[i][j].setBorder(new LineBorder(new Color(220, 85, 85), 1, true));
+			this.casillero.getCasillas()[i][j].setBackground(getCasillero().getColorMinaTocada());
+			this.casillero.getCasillas()[i][j].setBorder(new LineBorder(getCasillero().getColorMinaTocada(), 1, true));
 		} else {
-			this.casillero.getCasillas()[i][j].setBackground(new Color(74, 197, 149));
-			this.casillero.getCasillas()[i][j].setBorder(new LineBorder(new Color(24, 170, 113), 1, true));
+			this.casillero.getCasillas()[i][j].setBackground(getCasillero().getColorMinasSalvadas());
+			this.casillero.getCasillas()[i][j]
+					.setBorder(new LineBorder(getCasillero().getColorMinasSalvadas(), 1, true));
 		}
 	}
-	
+
 	/**
 	 * Establece los listeners de los objetos
 	 */
@@ -166,20 +169,32 @@ public class Bridge extends BuscaminasUI {
 	 * valores a las desveladas con minas.
 	 */
 	public void actualizarCasillero() {
-		
+
 		int dimensionFuente = Math.round(casillero.getCasillas()[0][0].getWidth() / 1.3f);
-		
+
 		for (int i = 0; i < casillero.getCasillas().length; i++) {
 			for (int j = 0; j < casillero.getCasillas().length; j++) {
 				if (control.getTablero()[i][j] == -2) {
 					casillero.getCasillas()[i][j].setEnabled(false);
-					casillero.getCasillas()[i][j].setBackground(new Color(72, 100, 118));
+					casillero.getCasillas()[i][j].setBackground(getCasillero().getColorCasillaDesvelada());
 				}
 
 				if (control.getTablero()[i][j] > 0) {
 					casillero.getCasillas()[i][j].setText(String.valueOf(control.getTablero()[i][j]));
-					casillero.getCasillas()[i][j].setFont(new Font("Arial", Font.PLAIN, dimensionFuente));
-					casillero.getCasillas()[i][j].setBackground(new Color(170, 198, 215));
+					casillero.getCasillas()[i][j].setFont(new Font("Arial", Font.BOLD, dimensionFuente));
+					casillero.getCasillas()[i][j].setBackground(getCasillero().getColorCasillaDesvelada());
+
+					switch (control.getTablero()[i][j]) {
+					case 1:
+						casillero.getCasillas()[i][j].setForeground(getCasillero().getColorUnaMina());
+						break;
+					case 2:
+						casillero.getCasillas()[i][j].setForeground(getCasillero().getColorDosMinas());
+						break;
+					default:
+						casillero.getCasillas()[i][j].setForeground(getCasillero().getColorMasMinas());
+						break;
+					}
 				}
 			}
 		}
@@ -194,7 +209,8 @@ public class Bridge extends BuscaminasUI {
 	 */
 	public void toogleBandera(int[] coordenadas) {
 		if (casillero.getCasillas()[coordenadas[0]][coordenadas[1]].getText() == "") {
-			if (casillero.getCasillas()[coordenadas[0]][coordenadas[1]].getBackground() != getCasillero().getColorBandera()) {
+			if (casillero.getCasillas()[coordenadas[0]][coordenadas[1]].getBackground() != getCasillero()
+					.getColorBandera()) {
 				casillero.getCasillas()[coordenadas[0]][coordenadas[1]].setBackground(getCasillero().getColorBandera());
 				toggleBanderasRestantes();
 			} else {
@@ -238,7 +254,7 @@ public class Bridge extends BuscaminasUI {
 		toggleBanderasRestantes();
 		toggleCasillasRestantes();
 	}
-	
+
 	/**
 	 * Establece el valor del componente grafico que representa el tiempo a 0
 	 */
@@ -291,17 +307,21 @@ public class Bridge extends BuscaminasUI {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Actualiza el tiempo actual de la partida
 	 */
 	public void setTime() {
 		int tiempoActual = Integer.parseInt(txtTiempo.getText());
-		txtTiempo.setText(String.valueOf(tiempoActual + 1));
+
+		if(tiempoActual < this.tiempoLimite) {
+			txtTiempo.setText(String.valueOf(tiempoActual + 1));
+		}
 	}
-	
+
 	/**
-	 * Establece la dificultad de la partida a partir de un valor que alberga el NAME del boton
+	 * Establece la dificultad de la partida a partir de un valor que alberga el
+	 * NAME del boton
 	 * 
 	 * @param dimension
 	 */
@@ -315,14 +335,14 @@ public class Bridge extends BuscaminasUI {
 		actualizarCasillero();
 		ocultarRecord();
 		reiniciarRecord();
-		
+
 		for (int i = 0; i < getCasillero().getCasillas().length; i++) {
 			for (int j = 0; j < getCasillero().getCasillas().length; j++) {
 				getCasillero().asignarPropiedadesCasilla(i, j);
 			}
 		}
-		
-		if(dimension == 15) {
+
+		if (dimension == 15) {
 			btnFacil.setEnabled(false);
 			btnMedio.setEnabled(true);
 			btnDificil.setEnabled(true);
