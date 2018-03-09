@@ -16,6 +16,7 @@ import java.awt.FlowLayout;
 import javax.swing.JButton;
 import java.awt.Toolkit;
 import javax.swing.BoxLayout;
+import java.awt.Component;
 
 
 public class BuscaminasUI extends JFrame {
@@ -38,6 +39,8 @@ public class BuscaminasUI extends JFrame {
 	protected JButton btnMedio;
 	protected JButton btnDificil;
 	private JPanel panelTop;
+	private JPanel panelTitulo;
+	private JLabel lblNewLabel_1;
 
 	/**
 	 * Create the frame.
@@ -62,15 +65,30 @@ public class BuscaminasUI extends JFrame {
 		contentPane.add(panelTop, BorderLayout.NORTH);
 		panelTop.setLayout(new BorderLayout(0, 0));
 		
+		panelTitulo = new JPanel();
+		panelTitulo.setBackground(Color.DARK_GRAY);
+		panelTop.add(panelTitulo, BorderLayout.NORTH);
+		panelTitulo.setLayout(new BorderLayout(0, 0));
+		
 		JLabel lblTitulo = new JLabel("BUSCAMINAS");
-		panelTop.add(lblTitulo, BorderLayout.NORTH);
+		lblTitulo.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+		panelTitulo.add(lblTitulo, BorderLayout.NORTH);
 		lblTitulo.setPreferredSize(new Dimension(widthScreen, (int) (heightScreen * 0.1f))); // ALTURA DEL TITULO
-		lblTitulo.setBorder(new EmptyBorder(5, 20, 5, 0));
+		lblTitulo.setBorder(new EmptyBorder(0, 20, 0, 0));
 		lblTitulo.setForeground(Color.WHITE);
 		lblTitulo.setHorizontalAlignment(SwingConstants.LEFT);
 		lblTitulo.setOpaque(true);
 		lblTitulo.setBackground(Color.DARK_GRAY);
 		lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 60));
+		
+		lblNewLabel_1 = new JLabel("Desarrollado por Jos\u00E9 Emilio Guti\u00E9rrez");
+		lblNewLabel_1.setOpaque(true);
+		lblNewLabel_1.setBorder(new EmptyBorder(5, 0, 5, 10));
+		lblNewLabel_1.setForeground(Color.GRAY);
+		lblNewLabel_1.setFont(new Font("Arial", Font.BOLD, 13));
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblNewLabel_1.setBackground(new Color(80, 80, 80));
+		panelTitulo.add(lblNewLabel_1, BorderLayout.SOUTH);
 		
 		JPanel panelOpciones = new JPanel();
 		panelTop.add(panelOpciones, BorderLayout.WEST);
@@ -89,7 +107,7 @@ public class BuscaminasUI extends JFrame {
 		btnFacil.setForeground(Color.WHITE);
 		btnFacil.setFocusPainted(false);
 		btnFacil.setName("15");
-		btnFacil.setBackground(Color.DARK_GRAY);
+		btnFacil.setBackground(new Color(80, 80, 80));
 		btnFacil.setBorder(new EmptyBorder(5, 30, 5, 30));
 		btnFacil.setFont(new Font("Arial", Font.PLAIN, 12));
 		panelDificultad.add(btnFacil);
@@ -99,7 +117,7 @@ public class BuscaminasUI extends JFrame {
 		btnMedio.setForeground(Color.WHITE);
 		btnMedio.setFocusPainted(false);
 		btnMedio.setName("20");
-		btnMedio.setBackground(Color.DARK_GRAY);
+		btnMedio.setBackground(new Color(80, 80, 80));
 		btnMedio.setBorder(new EmptyBorder(5, 30, 5, 30));
 		btnMedio.setFont(new Font("Arial", Font.PLAIN, 12));
 		panelDificultad.add(btnMedio);
@@ -109,7 +127,7 @@ public class BuscaminasUI extends JFrame {
 		btnDificil.setForeground(Color.WHITE);
 		btnDificil.setFocusPainted(false);
 		btnDificil.setName("25");
-		btnDificil.setBackground(Color.DARK_GRAY);
+		btnDificil.setBackground(new Color(80, 80, 80));
 		btnDificil.setBorder(new EmptyBorder(5, 30, 5, 30));
 		btnDificil.setFont(new Font("Arial", Font.PLAIN, 12));
 		panelDificultad.add(btnDificil);
