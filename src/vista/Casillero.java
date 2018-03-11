@@ -1,9 +1,15 @@
 package vista;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.Image;
+
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+
 import controlador.DisabledTextColor;
 
 public class Casillero extends JPanel {
@@ -11,7 +17,6 @@ public class Casillero extends JPanel {
 	protected JButton casillas[][];
 	private int tamano = 20;
 	private Color colorTexto = new Color(70, 70, 70);
-	private final Color colorBandera = new Color(236, 215, 133);
 	private final Color colorCasilla = new Color(169, 169, 169);
 	private final Color colorCasillaSeleccionada = new Color(227, 197, 143);
 	private final Color colorMinaTocada = new Color(171, 72, 72);
@@ -21,9 +26,6 @@ public class Casillero extends JPanel {
 	private final Color colorDosMinas = new Color(50, 142, 103);
 	private final Color colorMasMinas = new Color(142, 50, 50);
 
-	/**
-	 * Create the panel.
-	 */
 	public Casillero() {
 		iniciarCasillero();
 	}
@@ -60,8 +62,35 @@ public class Casillero extends JPanel {
 		this.casillas[i][j].setFocusPainted(false);
 		this.casillas[i][j].setBackground(colorCasilla);
 		this.casillas[i][j].setBorder(new EmptyBorder(1, 1, 1, 1));
+		this.casillas[i][j].setIcon(null);
 	}
 	
+	/**
+	 * Pone o quita el icono de una bandera
+	 * 
+	 * @param marcar TRUE si hay que poner la bandera o FALSE en caso contrario
+	 * @param x
+	 * @param y
+	 */
+	public void marcar(boolean marcar, int x, int y) {
+		if(marcar) {
+			this.casillas[x][y].setIcon(createScaledIcon(new ImageIcon(getClass().getResource("/assets/bandera.png")), this.casillas[x][y].getHeight()));
+		} else {
+			this.casillas[x][y].setIcon(null);
+		}
+	}
+	
+	/**
+	 * Escala un icono en base a una medida
+	 * 
+	 * @param Imagen Icono a escalar
+	 * @param height Medida con la que escalar
+	 * @return Icono escalado
+	 */
+	public ImageIcon createScaledIcon(ImageIcon Imagen, int height) {
+		return new ImageIcon(Imagen.getImage().getScaledInstance(height - 2, height - 2, Image.SCALE_SMOOTH));
+	}
+
 	/**
 	 * Deshabilita las casillas del casillero
 	 */
@@ -71,6 +100,26 @@ public class Casillero extends JPanel {
 				this.casillas[i][j].setUI(new DisabledTextColor(this.colorTexto));
 				this.casillas[i][j].setEnabled(false);
 			}
+		}
+	}
+
+	/**
+	 * Establece propiedades a la casilla minada especificada por parametro
+	 * 
+	 * @param i
+	 *            Entero que representa un valor de coordenada
+	 * @param j
+	 *            Entero que representa un valor de coordenada
+	 */
+	public void setPropiedadesMina(boolean minaTocada, int i, int j) {
+		this.casillas[i][j].setFont(new Font("Arial", Font.BOLD, this.casillas[i][j].getWidth()));
+		this.casillas[i][j].setIcon(null);
+		if (minaTocada) {
+			this.casillas[i][j].setBackground(this.colorMinaTocada);
+			this.casillas[i][j].setBorder(new LineBorder(this.colorMinaTocada, 1, true));
+		} else {
+			this.casillas[i][j].setBackground(this.colorMinasSalvadas);
+			this.casillas[i][j].setBorder(new LineBorder(this.colorMinasSalvadas, 1, true));
 		}
 	}
 
@@ -96,10 +145,6 @@ public class Casillero extends JPanel {
 
 	public void setColorTexto(Color colorTexto) {
 		this.colorTexto = colorTexto;
-	}
-	
-	public Color getColorBandera() {
-		return colorBandera;
 	}
 
 	public Color getColorCasilla() {

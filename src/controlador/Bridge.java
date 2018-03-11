@@ -1,16 +1,14 @@
 package controlador;
 
-import java.awt.Color;
 import java.awt.Font;
 import javax.swing.Timer;
-import javax.swing.border.LineBorder;
 import modelo.Tablero;
 import vista.BuscaminasUI;
 
 public class Bridge extends BuscaminasUI {
 
 	private Tablero control = new Tablero();
-	private ActionCasilla listenerCasilla = new ActionCasilla(control, this);
+	private ActionCasilla listenerCasilla = new ActionCasilla(this);
 	private ActionReiniciar listenerReiniciar = new ActionReiniciar(this);
 	private ActionTemporizador listenerTemporizador = new ActionTemporizador(this);
 	private ActionDificultad listenerDificultad = new ActionDificultad(this);
@@ -102,30 +100,10 @@ public class Bridge extends BuscaminasUI {
 	private void mostrarMinas() {
 		for (int i = 0; i < casillero.getCasillas().length; i++) {
 			for (int j = 0; j < casillero.getCasillas().length; j++) {
-				if (control.getTablero()[i][j] == -1) {
-					setPropiedadesMina(i, j);
+				if (control.getTablero()[i][j].isMina()) {
+					casillero.setPropiedadesMina(control.isMinaTocada(), i, j);
 				}
 			}
-		}
-	}
-
-	/**
-	 * Establece propiedades a la casilla minada especificada por parametro
-	 * 
-	 * @param i
-	 *            Entero que representa un valor de coordenada
-	 * @param j
-	 *            Entero que representa un valor de coordenada
-	 */
-	private void setPropiedadesMina(int i, int j) {
-		casillero.getCasillas()[i][j].setFont(new Font("Arial", Font.BOLD, casillero.getCasillas()[i][j].getWidth()));
-		if (control.isMinaTocada()) {
-			this.casillero.getCasillas()[i][j].setBackground(getCasillero().getColorMinaTocada());
-			this.casillero.getCasillas()[i][j].setBorder(new LineBorder(getCasillero().getColorMinaTocada(), 1, true));
-		} else {
-			this.casillero.getCasillas()[i][j].setBackground(getCasillero().getColorMinasSalvadas());
-			this.casillero.getCasillas()[i][j]
-					.setBorder(new LineBorder(getCasillero().getColorMinasSalvadas(), 1, true));
 		}
 	}
 
@@ -174,17 +152,18 @@ public class Bridge extends BuscaminasUI {
 
 		for (int i = 0; i < casillero.getCasillas().length; i++) {
 			for (int j = 0; j < casillero.getCasillas().length; j++) {
-				if (control.getTablero()[i][j] == -2) {
+				if (!control.getTablero()[i][j].isVelada() && control.getTablero()[i][j].getMinasAlrededor() == 0) {
 					casillero.getCasillas()[i][j].setEnabled(false);
 					casillero.getCasillas()[i][j].setBackground(getCasillero().getColorCasillaDesvelada());
 				}
 
-				if (control.getTablero()[i][j] > 0) {
-					casillero.getCasillas()[i][j].setText(String.valueOf(control.getTablero()[i][j]));
+				if (control.getTablero()[i][j].getMinasAlrededor() > 0) {
+					casillero.getCasillas()[i][j]
+							.setText(String.valueOf(control.getTablero()[i][j].getMinasAlrededor()));
 					casillero.getCasillas()[i][j].setFont(new Font("Arial", Font.BOLD, dimensionFuente));
 					casillero.getCasillas()[i][j].setBackground(getCasillero().getColorCasillaDesvelada());
 
-					switch (control.getTablero()[i][j]) {
+					switch (control.getTablero()[i][j].getMinasAlrededor()) {
 					case 1:
 						casillero.getCasillas()[i][j].setForeground(getCasillero().getColorUnaMina());
 						break;
@@ -202,21 +181,22 @@ public class Bridge extends BuscaminasUI {
 	}
 
 	/**
-	 * Cambia el color de fondo de la casilla segun el color que previamente tenga.
+	 * Cambia el color de fondo de la casilla segun el color que previamente tenga,
+	 * simulando una bandera.
 	 * 
 	 * @param nameCoordenadas
 	 *            Coordenadas de la casilla
 	 */
-	public void toogleBandera(int[] coordenadas) {
-		if (casillero.getCasillas()[coordenadas[0]][coordenadas[1]].getText() == "") {
-			if (casillero.getCasillas()[coordenadas[0]][coordenadas[1]].getBackground() != getCasillero()
-					.getColorBandera()) {
-				casillero.getCasillas()[coordenadas[0]][coordenadas[1]].setBackground(getCasillero().getColorBandera());
-				toggleBanderasRestantes();
+	public void toogleBandera(int x, int y) {
+		if (control.getTablero()[x][y].isVelada()) {
+			if (control.getTablero()[x][y].isMarcada()) {
+				control.getTablero()[x][y].setMarcada(false);
+				casillero.marcar(false, x, y);
 			} else {
-				casillero.getCasillas()[coordenadas[0]][coordenadas[1]].setBackground(new Color(220, 220, 220));
-				toggleBanderasRestantes();
+				control.getTablero()[x][y].setMarcada(true);
+				casillero.marcar(true, x, y);
 			}
+			toggleBanderasRestantes();
 		}
 	}
 
@@ -224,7 +204,11 @@ public class Bridge extends BuscaminasUI {
 	 * Actualiza el numero de banderas restantes por marcar
 	 */
 	private void toggleBanderasRestantes() {
-		txtCantidadMinas.setText(String.valueOf(control.getCantidadMinas() - getBanderas()));
+		txtCantidadMinas.setText(String.valueOf(control.getMinas() - getBanderas()));
+	}
+
+	public Tablero getControl() {
+		return control;
 	}
 
 	/**
@@ -235,7 +219,7 @@ public class Bridge extends BuscaminasUI {
 		int banderas = 0;
 		for (int i = 0; i < control.getTablero().length; i++) {
 			for (int j = 0; j < control.getTablero().length; j++) {
-				if (casillero.getCasillas()[i][j].getBackground() == getCasillero().getColorBandera()) {
+				if (this.control.getTablero()[i][j].isMarcada()) {
 					banderas++;
 				}
 			}
@@ -276,8 +260,8 @@ public class Bridge extends BuscaminasUI {
 		for (int i = 0; i < casillero.getCasillas().length; i++) {
 			for (int j = 0; j < casillero.getCasillas().length; j++) {
 				if (Math.abs(coordenadas[0] - i) <= 1 && Math.abs(coordenadas[1] - j) <= 1) {
-					if (casillero.getCasillas()[i][j].getBackground() != getCasillero().getColorBandera()
-							&& casillero.getCasillas()[i][j].isEnabled() && haveBandera(coordenadas)) {
+					if (!control.getTablero()[i][j].isMarcada() && casillero.getCasillas()[i][j].isEnabled()
+							&& haveBandera(coordenadas)) {
 						coordenadasContiguas[0] = i;
 						coordenadasContiguas[1] = j;
 						jugar(coordenadasContiguas);
@@ -299,7 +283,7 @@ public class Bridge extends BuscaminasUI {
 		for (int i = 0; i < casillero.getCasillas().length; i++) {
 			for (int j = 0; j < casillero.getCasillas().length; j++) {
 				if (Math.abs(coordenadas[0] - i) <= 1 && Math.abs(coordenadas[1] - j) <= 1) {
-					if (casillero.getCasillas()[i][j].getBackground() == getCasillero().getColorBandera()) {
+					if (control.getTablero()[i][j].isMarcada()) {
 						return true;
 					}
 				}
@@ -314,7 +298,7 @@ public class Bridge extends BuscaminasUI {
 	public void setTime() {
 		int tiempoActual = Integer.parseInt(txtTiempo.getText());
 
-		if(tiempoActual < this.tiempoLimite) {
+		if (tiempoActual < this.tiempoLimite) {
 			txtTiempo.setText(String.valueOf(tiempoActual + 1));
 		}
 	}
@@ -329,7 +313,7 @@ public class Bridge extends BuscaminasUI {
 
 		int minas = (int) (Math.pow(dimension, 2) * dimension / 100);
 
-		control.setCantidadMinas(minas);
+		control.setMinas(minas);
 		control.inicializar();
 		inicializarPartida();
 		actualizarCasillero();

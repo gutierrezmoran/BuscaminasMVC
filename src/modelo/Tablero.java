@@ -2,9 +2,9 @@ package modelo;
 
 public class Tablero {
 
-	private int dimension = 20;
-	private int[][] tablero;
-	private int cantidadMinas;
+	private final int dimension = 20;
+	private Casilla[][] tablero = new Casilla[dimension][dimension];
+	private int minas;
 	private int[] coordenadas = new int[2];
 	private boolean minaTocada = false;
 	private int record;
@@ -14,10 +14,9 @@ public class Tablero {
 	 * valor 0
 	 */
 	public void inicializar() {
-		tablero = new int[dimension][dimension];
-		for (int i = 0; i < this.tablero.length; i++) {
-			for (int j = 0; j < this.tablero.length; j++) {
-				this.tablero[i][j] = 0;
+		for (int i = 0; i < this.dimension; i++) {
+			for (int j = 0; j < this.dimension; j++) {
+				this.tablero[i][j] = new Casilla();
 			}
 		}
 	}
@@ -32,12 +31,12 @@ public class Tablero {
 		do {
 			x = generarNumero(dimension - 1, 0);
 			y = generarNumero(dimension - 1, 0);
-			
-			if (this.tablero[x][y] != -1 && getMinasContiguas(x, y) < 6) {
-				this.tablero[x][y] = -1;
+
+			if (!this.tablero[x][y].isMina() && getMinasContiguas(x, y) < 6) {
+				this.tablero[x][y].setMina(true);
 				minasEstablecidas++;
 			}
-		} while(minasEstablecidas != this.cantidadMinas);
+		} while (minasEstablecidas != this.minas);
 	}
 
 	/**
@@ -58,7 +57,7 @@ public class Tablero {
 	 *         o se acaba la partida con exito (todas las casillas descubiertas)
 	 */
 	public boolean realizarJugada() {
-		if (this.tablero[coordenadas[0]][coordenadas[1]] == -1) {
+		if (this.tablero[coordenadas[0]][coordenadas[1]].isMina()) {
 			minaTocada = true;
 			return false;
 		} else {
@@ -76,9 +75,9 @@ public class Tablero {
 	 * @return Retorna TRUE si hay casillas por descubrir o FALSE si no las hay
 	 */
 	public boolean isFinalizado() {
-		for (int i = 0; i < this.tablero.length; i++) {
-			for (int j = 0; j < this.tablero.length; j++) {
-				if (this.tablero[i][j] == 0) {
+		for (int i = 0; i < this.dimension; i++) {
+			for (int j = 0; j < this.dimension; j++) {
+				if (this.tablero[i][j].isVelada() && !this.tablero[i][j].isMina()) {
 					return false;
 				}
 			}
@@ -93,12 +92,14 @@ public class Tablero {
 	private void desvelar(int x, int y) {
 		int minasContiguas = getMinasContiguas(x, y);
 		if (minasContiguas != 0) {
-			this.tablero[x][y] = minasContiguas;
+			this.tablero[x][y].setMinasAlrededor(minasContiguas);
+			this.tablero[x][y].setVelada(false);
 		} else {
-			this.tablero[x][y] = -2;
-			for (int i = 0; i < tablero.length; i++) {
-				for (int j = 0; j < tablero.length; j++) {
-					if (Math.abs(x - i) <= 1 && Math.abs(y - j) <= 1 && (i != x || j != y) && tablero[i][j] == 0) {
+			this.tablero[x][y].setVelada(false);
+			for (int i = 0; i < this.dimension; i++) {
+				for (int j = 0; j < this.dimension; j++) {
+					if (Math.abs(x - i) <= 1 && Math.abs(y - j) <= 1 && (i != x || j != y)
+							&& tablero[i][j].isVelada()) {
 						desvelar(i, j);
 					}
 				}
@@ -113,10 +114,10 @@ public class Tablero {
 	 */
 	private int getMinasContiguas(int x, int y) {
 		int minas = 0;
-		for (int i = 0; i < tablero.length; i++) {
-			for (int j = 0; j < tablero.length; j++) {
+		for (int i = 0; i < this.dimension; i++) {
+			for (int j = 0; j < this.dimension; j++) {
 				if (Math.abs(x - i) <= 1 && Math.abs(y - j) <= 1) {
-					if (tablero[i][j] == -1) {
+					if (tablero[i][j].isMina()) {
 						minas++;
 					}
 				}
@@ -124,7 +125,7 @@ public class Tablero {
 		}
 		return minas;
 	}
-	
+
 	/**
 	 * @return Retorna el numero de casillas que quedan por desvelar
 	 */
@@ -132,7 +133,7 @@ public class Tablero {
 		int casillas = 0;
 		for (int i = 0; i < this.dimension; i++) {
 			for (int j = 0; j < this.dimension; j++) {
-				if (this.tablero[i][j] == 0) {
+				if (this.tablero[i][j].isVelada() && !this.tablero[i][j].isMina()) {
 					casillas++;
 				}
 			}
@@ -145,29 +146,36 @@ public class Tablero {
 	 * a FALSE
 	 */
 	public void reiniciar() {
-		inicializar();
+		for (int i = 0; i < this.dimension; i++) {
+			for (int j = 0; j < this.dimension; j++) {
+				this.tablero[i][j].setVelada(true);
+				this.tablero[i][j].setMina(false);
+				this.tablero[i][j].setMarcada(false);
+				this.tablero[i][j].setMinasAlrededor(0);
+			}
+		}
 		setMinas();
 		this.minaTocada = false;
 	}
 
-	public int[][] getTablero() {
+	public Casilla[][] getTablero() {
 		return tablero;
 	}
 
-	public int getCantidadMinas() {
-		return cantidadMinas;
+	public int getMinas() {
+		return minas;
 	}
 
 	public int[] getCoordenadas() {
 		return coordenadas;
 	}
 
-	public void setTablero(int[][] tablero) {
+	public void setTablero(Casilla[][] tablero) {
 		this.tablero = tablero;
 	}
 
-	public void setCantidadMinas(int cantidadMinas) {
-		this.cantidadMinas = cantidadMinas;
+	public void setMinas(int cantidadMinas) {
+		this.minas = cantidadMinas;
 	}
 
 	public void setCoordenadas(int[] coordenadas) {
@@ -182,12 +190,8 @@ public class Tablero {
 		this.minaTocada = minaTocada;
 	}
 
-	public int getTamano() {
+	public int getDimension() {
 		return dimension;
-	}
-
-	public void setTamano(int tamano) {
-		this.dimension = tamano;
 	}
 
 	public int getRecord() {
