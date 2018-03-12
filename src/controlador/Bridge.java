@@ -162,6 +162,7 @@ public class Bridge extends BuscaminasUI {
 							.setText(String.valueOf(control.getTablero()[i][j].getMinasAlrededor()));
 					casillero.getCasillas()[i][j].setFont(new Font("Arial", Font.BOLD, dimensionFuente));
 					casillero.getCasillas()[i][j].setBackground(getCasillero().getColorCasillaDesvelada());
+					casillero.getCasillas()[i][j].setIcon(null);
 
 					switch (control.getTablero()[i][j].getMinasAlrededor()) {
 					case 1:
