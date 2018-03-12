@@ -29,8 +29,8 @@ public class Tablero {
 		int y;
 		int minasEstablecidas = 0;
 		do {
-			x = generarNumero(dimension - 1, 0);
-			y = generarNumero(dimension - 1, 0);
+			x = generarNumero(dimension, 0);
+			y = generarNumero(dimension, 0);
 
 			if (!this.tablero[x][y].isMina() && getMinasContiguas(x, y) < 6) {
 				this.tablero[x][y].setMina(true);
