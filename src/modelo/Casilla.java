@@ -1,6 +1,7 @@
 package modelo;
 
 public class Casilla {
+
 	private boolean mina = false;
 	private int minasAlrededor = 0;
 	private boolean velada = true;

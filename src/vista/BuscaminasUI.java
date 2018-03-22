@@ -209,7 +209,7 @@ public class BuscaminasUI extends JFrame {
 		lblNewLabel.setFont(new Font("SansSerif", Font.ITALIC, 15));
 		panelRecord.add(lblNewLabel);
 
-		txtRecord = new JLabel("New label");
+		txtRecord = new JLabel("0");
 		txtRecord.setBorder(new EmptyBorder(0, 8, 0, 0));
 		txtRecord.setFont(new Font("SansSerif", Font.PLAIN, 16));
 		panelRecord.add(txtRecord);

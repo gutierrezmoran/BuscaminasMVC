@@ -2,6 +2,8 @@ package controlador;
 
 import java.awt.Font;
 import javax.swing.Timer;
+
+import modelo.Coordenadas;
 import modelo.Tablero;
 import vista.BuscaminasUI;
 
@@ -29,7 +31,9 @@ public class Bridge extends BuscaminasUI {
 	 *         contrario
 	 */
 	private boolean comprobarRecord() {
-		if (Integer.parseInt(txtTiempo.getText()) < control.getRecord()) {
+		int tiempo = Integer.parseInt(txtTiempo.getText());
+		int tiempoRecord = this.control.getRecord().getTiempoRecord();
+		if (tiempo < tiempoRecord || tiempoRecord == 0) {
 			return true;
 		}
 		return false;
@@ -38,30 +42,30 @@ public class Bridge extends BuscaminasUI {
 	/**
 	 * Establece un nuevo record
 	 */
-	private void establecerRecord() {
-		control.setRecord(Integer.parseInt(txtTiempo.getText()));
+	private void actualizarRecord() {
+		this.control.getRecord().setTiempoRecord(Integer.parseInt(this.txtTiempo.getText()));
 	}
 
 	/**
 	 * Actualiza el componente grafico con el nuevo record
 	 */
 	private void mostrarRecord() {
-		txtRecord.setText(String.valueOf(control.getRecord()));
-		panelRecord.setVisible(true);
+		this.txtRecord.setText(String.valueOf(this.control.getRecord().getTiempoRecord()));
+		this.panelRecord.setVisible(true);
 	}
 
 	/**
 	 * Oculta el componente grafico que representa el record
 	 */
 	private void ocultarRecord() {
-		panelRecord.setVisible(false);
+		this.panelRecord.setVisible(false);
 	}
 
 	/**
 	 * Establece el valor del componente grafico que representa el record a 0
 	 */
 	private void reiniciarRecord() {
-		txtRecord.setText("0");
+		this.txtRecord.setText("0");
 	}
 
 	/**
@@ -74,20 +78,21 @@ public class Bridge extends BuscaminasUI {
 	 *            Vector de coordenadas
 	 */
 	public void jugar(int[] coordenadas) {
-		timer.start();
-		control.setCoordenadas(coordenadas);
-		if (control.realizarJugada()) {
+		this.timer.start();
+		this.control.getCoordenadas().setCoordenadas(coordenadas);
+		if (this.control.realizarJugada()) {
 			actualizarCasillero();
 			toggleCasillasRestantes();
 		} else {
-			timer.stop();
+			this.timer.stop();
 			actualizarCasillero();
 			toggleCasillasRestantes();
 			mostrarMinas();
 			getCasillero().deshabilitarCasillas();
-			if (control.isFinalizado()) {
-				comprobarRecord();
-				establecerRecord();
+			if (this.control.isPartidaFinalizada()) {
+				if(comprobarRecord()) {
+					actualizarRecord();
+				}
 				mostrarRecord();
 			}
 		}
@@ -98,10 +103,10 @@ public class Bridge extends BuscaminasUI {
 	 * Establece propiedades especificas para las casillas minadas.
 	 */
 	private void mostrarMinas() {
-		for (int i = 0; i < casillero.getCasillas().length; i++) {
-			for (int j = 0; j < casillero.getCasillas().length; j++) {
-				if (control.getTablero()[i][j].isMina()) {
-					casillero.setPropiedadesMina(control.isMinaTocada(), i, j);
+		for (int i = 0; i < this.casillero.getCasillas().length; i++) {
+			for (int j = 0; j < this.casillero.getCasillas().length; j++) {
+				if (this.control.isMina(new Coordenadas(i, j))) {
+					this.casillero.setPropiedadesMina(this.control.isMinaTocada(control.getCoordenadas()), i, j);
 				}
 			}
 		}
@@ -111,13 +116,13 @@ public class Bridge extends BuscaminasUI {
 	 * Establece los listeners de los objetos
 	 */
 	private void setListeners() {
-		btnReiniciar.addMouseListener(listenerReiniciar);
-		btnFacil.addActionListener(listenerDificultad);
-		btnMedio.addActionListener(listenerDificultad);
-		btnDificil.addActionListener(listenerDificultad);
+		this.btnReiniciar.addMouseListener(this.listenerReiniciar);
+		this.btnFacil.addActionListener(this.listenerDificultad);
+		this.btnMedio.addActionListener(this.listenerDificultad);
+		this.btnDificil.addActionListener(this.listenerDificultad);
 		for (int i = 0; i < this.casillero.getCasillas().length; i++) {
 			for (int j = 0; j < this.casillero.getCasillas()[i].length; j++) {
-				this.casillero.getCasillas()[i][j].addMouseListener(listenerCasilla);
+				this.casillero.getCasillas()[i][j].addMouseListener(this.listenerCasilla);
 			}
 		}
 	}
@@ -129,8 +134,8 @@ public class Bridge extends BuscaminasUI {
 	 */
 	private void inicializarPartida() {
 		reiniciarTiempo();
-		control.inicializar();
-		control.setMinas();
+		this.control.inicializarTablero();
+		this.control.ponerMinas();
 		toggleBanderasRestantes();
 		toggleCasillasRestantes();
 	}
@@ -139,7 +144,7 @@ public class Bridge extends BuscaminasUI {
 	 * Actualiza el numero de casillas restantes por desvelar
 	 */
 	private void toggleCasillasRestantes() {
-		txtCantidadCasillas.setText(String.valueOf(control.getCasillasRestantes()));
+		this.txtCantidadCasillas.setText(String.valueOf(this.control.contarCasillasPorDesvelar()));
 	}
 
 	/**
@@ -147,38 +152,49 @@ public class Bridge extends BuscaminasUI {
 	 * valores a las desveladas con minas.
 	 */
 	public void actualizarCasillero() {
+		for (int i = 0; i < this.casillero.getCasillas().length; i++) {
+			for (int j = 0; j < this.casillero.getCasillas().length; j++) {
 
-		int dimensionFuente = Math.round(casillero.getCasillas()[0][0].getWidth() / 1.3f);
-
-		for (int i = 0; i < casillero.getCasillas().length; i++) {
-			for (int j = 0; j < casillero.getCasillas().length; j++) {
-				if (!control.getTablero()[i][j].isVelada() && control.getTablero()[i][j].getMinasAlrededor() == 0) {
-					casillero.getCasillas()[i][j].setEnabled(false);
-					casillero.getCasillas()[i][j].setBackground(getCasillero().getColorCasillaDesvelada());
+				if (!this.control.getTablero()[i][j].isVelada() && !isRodeadaDeMinas(i, j)) {
+					this.casillero.getCasillas()[i][j].setEnabled(false);
+					this.casillero.getCasillas()[i][j].setBackground(getCasillero().getColorCasillaDesvelada());
 				}
 
-				if (control.getTablero()[i][j].getMinasAlrededor() > 0) {
-					casillero.getCasillas()[i][j]
-							.setText(String.valueOf(control.getTablero()[i][j].getMinasAlrededor()));
-					casillero.getCasillas()[i][j].setFont(new Font("Arial", Font.BOLD, dimensionFuente));
-					casillero.getCasillas()[i][j].setBackground(getCasillero().getColorCasillaDesvelada());
-					casillero.getCasillas()[i][j].setIcon(null);
-
-					switch (control.getTablero()[i][j].getMinasAlrededor()) {
-					case 1:
-						casillero.getCasillas()[i][j].setForeground(getCasillero().getColorUnaMina());
-						break;
-					case 2:
-						casillero.getCasillas()[i][j].setForeground(getCasillero().getColorDosMinas());
-						break;
-					default:
-						casillero.getCasillas()[i][j].setForeground(getCasillero().getColorMasMinas());
-						break;
-					}
+				if (isRodeadaDeMinas(i, j)) {
+					ponerNumeroMinasEnCasilla(i, j);
+					asignarColorNumeroMinas(i, j);
 				}
+
 			}
 		}
+	}
+	
+	private boolean isRodeadaDeMinas(int x, int y) {
+		if(this.control.getTablero()[x][y].getMinasAlrededor() > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	private void ponerNumeroMinasEnCasilla(int x, int y) {
+		int dimensionFuente = Math.round(this.casillero.getCasillas()[0][0].getWidth() / 1.3f);
 
+		this.casillero.getCasillas()[x][y]
+				.setText(String.valueOf(control.getTablero()[x][y].getMinasAlrededor()));
+		this.casillero.getCasillas()[x][y].setFont(new Font("Arial", Font.BOLD, dimensionFuente));
+		this.casillero.getCasillas()[x][y].setBackground(getCasillero().getColorCasillaDesvelada());
+		this.casillero.getCasillas()[x][y].setIcon(null);
+	}
+	
+	private void asignarColorNumeroMinas(int x, int y) {
+		if(this.control.getTablero()[x][y].getMinasAlrededor() == 1) {
+			this.casillero.getCasillas()[x][y].setForeground(getCasillero().getColorUnaMina());
+		} else if (this.control.getTablero()[x][y].getMinasAlrededor() == 2) {
+			casillero.getCasillas()[x][y].setForeground(getCasillero().getColorDosMinas());
+		} else {
+			casillero.getCasillas()[x][y].setForeground(getCasillero().getColorMasMinas());
+		}
 	}
 
 	/**
@@ -235,7 +251,7 @@ public class Bridge extends BuscaminasUI {
 				casillero.asignarPropiedadesCasilla(i, j);
 			}
 		}
-		control.reiniciar();
+		control.reiniciarTablero();
 		toggleBanderasRestantes();
 		toggleCasillasRestantes();
 	}
@@ -315,7 +331,7 @@ public class Bridge extends BuscaminasUI {
 		int minas = (int) (Math.pow(dimension, 2) * dimension / 100);
 
 		control.setMinas(minas);
-		control.inicializar();
+		control.inicializarTablero();
 		inicializarPartida();
 		actualizarCasillero();
 		ocultarRecord();
